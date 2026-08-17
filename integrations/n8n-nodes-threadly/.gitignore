@@ -1,0 +1,8 @@
+# dist/ lo compila el workflow de publicacion. Versionarlo es justo la
+# discrepancia que la procedencia existe para delatar: el tarball firmado dejaria
+# de corresponder al codigo del commit.
+dist/
+node_modules/
+*.tsbuildinfo
+*.tgz
+.DS_Store

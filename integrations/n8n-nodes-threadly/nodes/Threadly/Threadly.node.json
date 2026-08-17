@@ -1,0 +1,22 @@
+{
+  "node": "n8n-nodes-threadly.threadly",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": [
+    "Communication",
+    "Sales",
+    "Marketing"
+  ],
+  "resources": {
+    "primaryDocumentation": [
+      {
+        "url": "https://github.com/NexAdsAI/n8n-nodes-threadly#readme"
+      }
+    ],
+    "credentialDocumentation": [
+      {
+        "url": "https://github.com/NexAdsAI/n8n-nodes-threadly#credentials"
+      }
+    ]
+  }
+}

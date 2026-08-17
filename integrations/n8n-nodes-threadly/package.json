@@ -1,0 +1,60 @@
+{
+  "name": "n8n-nodes-threadly",
+  "version": "0.1.0",
+  "description": "n8n community node for Threadly (AI omnichannel contact center): contacts, tickets, messages, leads, core events and sequences over the public v1 API, plus a signed-webhook trigger.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "threadly",
+    "contact-center",
+    "crm",
+    "whatsapp",
+    "omnichannel"
+  ],
+  "license": "MIT",
+  "homepage": "https://threadlywdp.com",
+  "author": {
+    "name": "Work Data Place S.A.C.",
+    "email": "soporte@threadlywdp.com",
+    "url": "https://threadlywdp.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NexAdsAI/n8n-nodes-threadly.git",
+    "directory": "integrations/n8n-nodes-threadly"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && node ./scripts/copy-assets.js",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist",
+    "index.js",
+    "CHANGELOG.md",
+    "!dist/**/*.js.map"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/ThreadlyApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Threadly/Threadly.node.js",
+      "dist/nodes/Threadly/ThreadlyTrigger.node.js"
+    ]
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "n8n-workflow": "^2.16.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -1,0 +1,100 @@
+# Publica el nodo community de n8n (integrations/n8n-nodes-threadly) en npm.
+#
+# CONDICION QUE NO SE PUEDE SALTAR: la procedencia solo funciona si el
+# repositorio desde el que corre este workflow es PUBLICO y su URL coincide con
+# `repository.url` del package.json (hoy: NexAdsAI/n8n-nodes-threadly). El
+# registro de npm compara ambas y rechaza la publicacion si no calzan; la
+# atestacion ademas se escribe en el log de transparencia de Sigstore, que es
+# publico por definicion. Ver PUBLICAR.md para el detalle.
+name: Publicar nodo n8n en npm
+
+# Se publica al empujar una etiqueta vX.Y.Z, no en cada push a main: la version
+# del paquete la decide una persona, y npm rechaza republicar una version existente.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      # Obligatorio para la procedencia: npm firma el paquete con el token OIDC
+      # efimero que GitHub emite para esta ejecucion. Sin este permiso,
+      # `--provenance` falla. n8n exige paquetes con procedencia para verificar.
+      id-token: write
+
+    # El paquete NO esta en la raiz del repo. Sin esto, cada `run` correria
+    # contra el package.json del monorepo y publicaria (o intentaria publicar)
+    # otra cosa.
+    defaults:
+      run:
+        working-directory: integrations/n8n-nodes-threadly
+
+    steps:
+      - name: Traer el codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+          # El cache busca el lockfile desde la raiz del repo: `defaults.run` no
+          # aplica a las acciones, solo a los `run`.
+          cache-dependency-path: integrations/n8n-nodes-threadly/package-lock.json
+
+      # `npm ci` y no `npm install`: instala exactamente lo del lockfile. Aca solo
+      # hay dependencias de desarrollo (typescript y los tipos de n8n) y ninguna
+      # viaja al tarball, pero una version distinta de los tipos puede tumbar la
+      # compilacion en CI y no en la maquina de quien publica.
+      - name: Instalar dependencias de desarrollo
+        run: npm ci --no-audit --no-fund
+
+      # Un nodo verificado por n8n no puede traer NINGUNA dependencia de
+      # ejecucion. Se comprueba en CI y no solo por disciplina porque un
+      # `npm install --save` distraido no rompe el build ni los tipos: el
+      # paquete se publica bien y el fallo recien aparece semanas despues, en la
+      # revision de n8n.
+      - name: Comprobar que no hay dependencias de ejecucion
+        run: |
+          cantidad="$(node -p "Object.keys(require('./package.json').dependencies || {}).length")"
+          if [ "$cantidad" != "0" ]; then
+            echo "El paquete declara $cantidad dependencia(s) de ejecucion; los nodos verificados no pueden tener ninguna." >&2
+            node -p "JSON.stringify(require('./package.json').dependencies, null, 2)" >&2
+            exit 1
+          fi
+
+      - name: Verificar tipos
+        run: npm run lint
+
+      - name: Compilar
+        run: npm run build
+
+      # La version del package.json tiene que coincidir con la etiqueta: publicar
+      # v0.2.0 con package.json en 0.1.0 deja el repo mintiendo sobre lo que hay
+      # en npm, y npm no lo detecta solo.
+      - name: Comprobar que la etiqueta coincide con la version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          version_paquete="$(node -p "require('./package.json').version")"
+          version_tag="${GITHUB_REF_NAME#v}"
+          if [ "$version_paquete" != "$version_tag" ]; then
+            echo "La etiqueta ($version_tag) no coincide con package.json ($version_paquete)" >&2
+            exit 1
+          fi
+
+      # Deja en el log exactamente que archivos se van a subir. Es la ultima
+      # oportunidad de ver un archivo de mas ANTES de que la version quede
+      # inmutable en npm.
+      - name: Listar el contenido del tarball
+        run: npm pack --dry-run
+
+      - name: Publicar
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
