@@ -38,24 +38,28 @@ jobs:
       - name: Traer el codigo
         uses: actions/checkout@v4
 
+      # OJO: SIN `registry-url`. Esa opcion hace que setup-node escriba un .npmrc
+      # con `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}`, y como no hay
+      # ningun token -justamente el punto de Trusted Publishing- npm ve una
+      # credencial VACIA y aborta con `ENEEDAUTH` en vez de caer al flujo OIDC.
+      # Es lo que hizo fallar la primera publicacion del 17-08-2026, y el mensaje
+      # de error manda a `npm adduser`, que es exactamente lo contrario.
       - name: Preparar Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          registry-url: "https://registry.npmjs.org"
-
-      # npm >= 11.5.1 es REQUISITO de Trusted Publishing: las versiones anteriores
-      # no saben canjear el token OIDC por credenciales del registro y fallan con
-      # `ENEEDAUTH` aunque el publicador de confianza este bien configurado.
-      # Node 22 trae npm 10, asi que hay que subirlo a mano (17-08-2026).
-      - name: Subir npm a una version que hable OIDC
-        run: |
-          npm install -g npm@latest
-          echo "npm $(npm --version)"
           cache: "npm"
           # El cache busca el lockfile desde la raiz del repo: `defaults.run` no
           # aplica a las acciones, solo a los `run`.
           cache-dependency-path: integrations/n8n-nodes-threadly/package-lock.json
+
+      # npm >= 11.5.1 es REQUISITO de Trusted Publishing: antes de esa version el
+      # cliente no sabe canjear el token OIDC por credenciales del registro.
+      # Node 22 trae npm 10, asi que hay que subirlo a mano.
+      - name: Subir npm a una version que hable OIDC
+        run: |
+          npm install -g npm@latest
+          echo "npm $(npm --version)"
 
       # `npm ci` y no `npm install`: instala exactamente lo del lockfile. Aca solo
       # hay dependencias de desarrollo (typescript y los tipos de n8n) y ninguna
