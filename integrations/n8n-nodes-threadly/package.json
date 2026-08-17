@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-threadly",
+  "name": "n8n-nodes-threadlywdp",
   "version": "0.1.0",
   "description": "n8n community node for Threadly (AI omnichannel contact center): contacts, tickets, messages, leads, core events and sequences over the public v1 API, plus a signed-webhook trigger.",
   "keywords": [
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NexAdsAI/n8n-nodes-threadly.git",
+    "url": "git+https://github.com/NexAdsAI/n8n-nodes-threadlywdp.git",
     "directory": "integrations/n8n-nodes-threadly"
   },
   "engines": {

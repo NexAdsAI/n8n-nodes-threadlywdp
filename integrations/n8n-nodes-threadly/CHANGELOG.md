@@ -44,5 +44,5 @@ Primera version publica del nodo community de Threadly para n8n.
   `create`, `delete`) es deliberadamente inocuo: n8n no intenta crear nada ni
   borra lo que configuro una persona.
 
-[No publicado]: https://github.com/NexAdsAI/n8n-nodes-threadly/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/NexAdsAI/n8n-nodes-threadly/releases/tag/v0.1.0
+[No publicado]: https://github.com/NexAdsAI/n8n-nodes-threadlywdp/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/NexAdsAI/n8n-nodes-threadlywdp/releases/tag/v0.1.0

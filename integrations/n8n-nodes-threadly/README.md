@@ -1,4 +1,4 @@
-# n8n-nodes-threadly
+# n8n-nodes-threadlywdp
 
 Community nodes for [n8n](https://n8n.io) that talk to [Threadly](https://threadlywdp.com), the AI omnichannel contact center platform by Work Data Place.
 
@@ -28,14 +28,14 @@ The package has no runtime dependencies: it only uses what n8n already ships.
 ### From the n8n UI (recommended)
 
 1. **Settings > Community nodes > Install a community node**.
-2. Package name: `n8n-nodes-threadly`.
+2. Package name: `n8n-nodes-threadlywdp`.
 3. Accept the risks and install. n8n restarts on its own.
 
 ### From the command line
 
 ```bash
 cd ~/.n8n
-npm install n8n-nodes-threadly
+npm install n8n-nodes-threadlywdp
 ```
 
 Restart n8n after installing.
@@ -224,7 +224,7 @@ To try it against a local n8n:
 ```bash
 npm run build
 npm link
-cd ~/.n8n/nodes && npm link n8n-nodes-threadly
+cd ~/.n8n/nodes && npm link n8n-nodes-threadlywdp
 ```
 
 Then restart n8n.
@@ -232,7 +232,7 @@ Then restart n8n.
 Before publishing, run the official community package scan:
 
 ```bash
-npx @n8n/scan-community-package n8n-nodes-threadly
+npx @n8n/scan-community-package n8n-nodes-threadlywdp
 ```
 
 ## Publishing

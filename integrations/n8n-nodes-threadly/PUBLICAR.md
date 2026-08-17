@@ -1,4 +1,4 @@
-# Publicar `n8n-nodes-threadly` en npm con procedencia
+# Publicar `n8n-nodes-threadlywdp` en npm con procedencia
 
 Procedimiento exacto, en orden. Sirve para la 0.1.0 y para cada version
 siguiente. Al final hay un apartado con lo que se rompe si algun paso se saltea.
@@ -22,8 +22,8 @@ Hoy el `package.json` declara:
 ```json
 "repository": {
   "type": "git",
-  "url": "git+https://github.com/NexAdsAI/n8n-nodes-threadly.git",
-  "directory": "integrations/n8n-nodes-threadly"
+  "url": "git+https://github.com/NexAdsAI/n8n-nodes-threadlywdp.git",
+  "directory": "integrations/n8n-nodes-threadlywdp"
 }
 ```
 
@@ -38,7 +38,7 @@ tocar nada mas:
 
 | Opcion | Que hay que hacer | Que hay que ajustar |
 | --- | --- | --- |
-| **A (recomendada).** Repositorio publico dedicado `NexAdsAI/n8n-nodes-threadly`, con el paquete en `integrations/n8n-nodes-threadly/` | Crear el repo publico y espejar ahi esa carpeta mas `.github/workflows/publicar-nodo-n8n.yml` | Nada. `package.json` y el workflow ya asumen este layout. |
+| **A (recomendada).** Repositorio publico dedicado `NexAdsAI/n8n-nodes-threadlywdp`, con el paquete en `integrations/n8n-nodes-threadlywdp/` | Crear el repo publico y espejar ahi esa carpeta mas `.github/workflows/publicar-nodo-n8n.yml` | Nada. `package.json` y el workflow ya asumen este layout. |
 | **B.** Mismo repositorio publico pero con el paquete en la **raiz** | Crear el repo publico y copiar el contenido de la carpeta a la raiz | Quitar `repository.directory` del `package.json` y quitar el bloque `defaults.run.working-directory` del workflow. |
 
 El resto de este documento asume la **opcion A**.
@@ -59,10 +59,10 @@ Paso 3.
    - *Packages and scopes*: permiso **Read and write**. Para la primera
      publicacion el paquete todavia no existe, asi que hay que dar alcance a
      todos los paquetes de la cuenta (*All packages*); despues de publicar
-     conviene reemplazar el token por uno acotado solo a `n8n-nodes-threadly`.
+     conviene reemplazar el token por uno acotado solo a `n8n-nodes-threadlywdp`.
    - No hace falta ningun permiso de organizacion ni de usuario.
 3. Copiar el token. Se muestra **una sola vez**.
-4. En GitHub, en el repositorio **publico** (`NexAdsAI/n8n-nodes-threadly`):
+4. En GitHub, en el repositorio **publico** (`NexAdsAI/n8n-nodes-threadlywdp`):
    **Settings > Secrets and variables > Actions > New repository secret**.
    - *Name*: `NPM_TOKEN` (exactamente asi; es el nombre que lee el workflow).
    - *Secret*: el token pegado.
@@ -81,7 +81,7 @@ Paso 3.
 
 ## Paso 2. Verificar el paquete en local
 
-Desde `integrations/n8n-nodes-threadly/`:
+Desde `integrations/n8n-nodes-threadlywdp/`:
 
 ```bash
 npm ci                  # instala exactamente lo del lockfile
@@ -108,7 +108,7 @@ paquete subido a mano no lleva procedencia y n8n no lo verifica.
    *Danger Zone*: tiene que decir *Change visibility to private*, no lo
    contrario).
 2. Confirmar que contiene:
-   - `integrations/n8n-nodes-threadly/` con el paquete.
+   - `integrations/n8n-nodes-threadlywdp/` con el paquete.
    - `.github/workflows/publicar-nodo-n8n.yml`.
    - `package-lock.json` versionado (el workflow corre `npm ci` y sin lockfile
      falla).
@@ -171,7 +171,7 @@ Los pasos, en orden, y que significa que falle cada uno:
 Tres comprobaciones independientes. Vale la pena hacer las tres la primera vez.
 
 **1. En la pagina del paquete en npm.** Abrir
-<https://www.npmjs.com/package/n8n-nodes-threadly>. En la barra lateral derecha
+<https://www.npmjs.com/package/n8n-nodes-threadlywdp>. En la barra lateral derecha
 tiene que aparecer un bloque **Provenance** con el repositorio, el commit y el
 workflow que lo construyeron. Si no aparece, el paquete se publico **sin**
 procedencia y n8n no lo va a verificar.
@@ -179,7 +179,7 @@ procedencia y n8n no lo va a verificar.
 **2. Desde la linea de comandos.**
 
 ```bash
-npm view n8n-nodes-threadly dist.attestations
+npm view n8n-nodes-threadlywdp dist.attestations
 ```
 
 Tiene que devolver un objeto con una URL de `registry.npmjs.org/-/npm/v1/attestations/...`
@@ -196,7 +196,7 @@ Correrlo en una carpeta limpia donde se haya instalado el paquete:
 
 ```bash
 mkdir /tmp/verificar-threadly && cd /tmp/verificar-threadly
-npm init -y && npm install n8n-nodes-threadly
+npm init -y && npm install n8n-nodes-threadlywdp
 npm audit signatures
 ```
 
@@ -219,7 +219,7 @@ Con el paquete publicado y con procedencia, el envio se hace desde el
 el escaner oficial, que es el mismo que corre n8n del lado suyo:
 
 ```bash
-npx @n8n/scan-community-package n8n-nodes-threadly
+npx @n8n/scan-community-package n8n-nodes-threadlywdp
 ```
 
 Tiene que decir que el paquete paso todas las comprobaciones. Corre contra la
@@ -232,7 +232,7 @@ version **ya publicada** en npm, no contra la carpeta local.
 | Error | Causa | Solucion |
 | --- | --- | --- |
 | `EOTP` / `E401` | El `NPM_TOKEN` vencio, se revoco, o es un token clasico con 2FA obligatorio | Generar un Granular Access Token nuevo y actualizar el secret |
-| `E403 Forbidden` | El nombre `n8n-nodes-threadly` ya lo tomo otra cuenta, o el token no tiene permiso de escritura | Verificar la propiedad del nombre en npm y el alcance del token |
+| `E403 Forbidden` | El nombre `n8n-nodes-threadlywdp` ya lo tomo otra cuenta, o el token no tiene permiso de escritura | Verificar la propiedad del nombre en npm y el alcance del token |
 | `EPUBLISHCONFLICT` / `cannot publish over previously published version` | Esa version ya existe en npm | Subir la version y volver a etiquetar. Una version publicada no se puede reemplazar |
 | `Provenance generation in GitHub Actions requires "write" access to the "id-token" permission` | Falta `id-token: write` | Ya esta en el workflow; si aparece, alguien lo borro |
 | `package.json repository url does not match` (o la publicacion se rechaza al firmar) | El repositorio desde el que corre el workflow no es el de `repository.url` | Ver el Paso 0 |

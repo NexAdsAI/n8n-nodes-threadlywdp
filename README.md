@@ -1,9 +1,9 @@
-# n8n-nodes-threadly
+# n8n-nodes-threadlywdp
 
 Nodo comunitario de [n8n](https://n8n.io) para **[Threadly](https://threadlywdp.com)**,
 la plataforma de contact center omnicanal con IA de Work Data Place.
 
-El paquete vive en [`integrations/n8n-nodes-threadly/`](integrations/n8n-nodes-threadly/) —
+El paquete vive en [`integrations/n8n-nodes-threadlywdp/`](integrations/n8n-nodes-threadlywdp/) —
 ahí está el README con la instalación, la lista de operaciones y ejemplos de flujo.
 
 ## Qué trae
