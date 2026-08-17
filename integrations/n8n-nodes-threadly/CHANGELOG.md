@@ -5,6 +5,21 @@ El paquete sigue [Versionado Semantico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
+## [0.1.1] - 2026-08-17
+
+Primera version publicada **desde CI con procedencia** (npm Trusted Publishing
+sobre OIDC de GitHub Actions). Sin cambios de codigo respecto de la 0.1.0: lo que
+cambia es COMO se publica.
+
+Por que importa: n8n exige procedencia para verificar un nodo comunitario. La
+0.1.0 se publico a mano para poder existir -npm no deja configurar un publicador
+de confianza para un paquete que aun no existe-, y esta es la primera que sale
+firmada. Con esto se puede pedir la verificacion.
+
+El token de larga vida del arranque queda invalidado: el paquete quedo en modo
+"require 2FA and disallow bypass 2fa tokens", asi que publicar solo se puede
+desde este workflow, en este repositorio.
+
 ## [0.1.0] - 2026-08-17
 
 Primera version publica del nodo community de Threadly para n8n.
