@@ -43,6 +43,15 @@ jobs:
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
+
+      # npm >= 11.5.1 es REQUISITO de Trusted Publishing: las versiones anteriores
+      # no saben canjear el token OIDC por credenciales del registro y fallan con
+      # `ENEEDAUTH` aunque el publicador de confianza este bien configurado.
+      # Node 22 trae npm 10, asi que hay que subirlo a mano (17-08-2026).
+      - name: Subir npm a una version que hable OIDC
+        run: |
+          npm install -g npm@latest
+          echo "npm $(npm --version)"
           cache: "npm"
           # El cache busca el lockfile desde la raiz del repo: `defaults.run` no
           # aplica a las acciones, solo a los `run`.
