@@ -107,7 +107,12 @@ jobs:
       - name: Listar el contenido del tarball
         run: npm pack --dry-run
 
+      # SIN `env: NODE_AUTH_TOKEN`. Con Trusted Publishing no hay token: npm canjea
+      # el token OIDC de GitHub por credenciales del registro. Pasar la variable
+      # VACIA no es neutro — npm la toma como una credencial vacia y aborta con
+      # ENEEDAUTH antes de intentar el flujo OIDC. Es lo que fallo el 17-08-2026.
+      #
+      # `--provenance` no necesita bandera extra: al publicar por OIDC, npm firma
+      # la atestacion con el mismo token.
       - name: Publicar
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
